@@ -1,0 +1,41 @@
+#!/usr/bin/env php
+<?php
+use Symfony\Component\Console\Application;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Finder\Finder;
+
+require 'vendor/autoload.php';
+
+(new Application('perf', '1.0.0'))
+    ->register('perf')
+    //->addArgument('foo', InputArgument::OPTIONAL, 'The directory')
+    ->addOption('directory', 'd', InputOption::VALUE_REQUIRED, 'Directory where php test files can be found', './tests/')
+    ->addOption('count', 'c', InputOption::VALUE_REQUIRED, 'interations', 100)
+    ->setCode(function (InputInterface $input, OutputInterface $output) {
+        $output->writeln('Starting performance testing');
+        //new File
+        $finder = new Finder();
+        $dir = $input->getOption('directory');
+        $dir = realpath($dir);
+        $finder->in($dir);
+        $finder->name('*.php');
+        $iterations = $input->getOption('count');
+
+        foreach ($finder->files() as $file) {
+            $output->writeln($file->getPathName());
+            $start = microtime(true);
+            for ($i = 0; $i < $iterations;  $i++) {
+               include $file->getPathName();
+            }
+            $end = microtime(true);
+            $time = $end-$start;
+            $output->writeln("Ran in {$time} seconds");
+        }
+
+
+    })
+    ->getApplication()
+    ->setDefaultCommand('perf', true)// Single command application
+    ->run();

@@ -1,0 +1,16 @@
+{
+    "name": "abumbacea/performance",
+    "authors": [
+        {
+            "name": "Alexandru Bumbacea",
+            "email": "alex.bumbacea@gmail.com"
+        }
+    ],
+    "require": {
+        "symfony/console": "^3.3",
+        "symfony/finder": "^3.3"
+    },
+    "bin": [
+        "perf"
+    ]
+}
